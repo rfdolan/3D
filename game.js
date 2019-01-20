@@ -63,13 +63,30 @@ Any value returned is ignored.
      ENEMY_COLOR: 0XFF0000, //enemy color
      WALL_COLOR: 0X897CA1, //wall color
 
+     playerx: 0, //player x value
+     playery: 0, //player y value
+     movePlayer : function ( x, y ) //move player
+     {
+
+         if( ( 0 <= ( PUZZLE.playerx + x ) && ( 32 > ( PUZZLE.playerx + x ) ) ) )
+         {
+             PUZZLE.playerx += x;
+         }
+         if( ( 0 <= ( PUZZLE.playery + y ) && ( 32 > ( PUZZLE.playery + y ) ) ) )
+         {
+             PUZZLE.playery += y;
+         }
+     }
+
      DrawMap : function(currLev){
         if (currLev == 0){ //grid with goal
             PS.gridColor(PUZZLE.GOAL_GRID);
             PS.gridPlane(PUZZLE.GOAL_GRID);
+
          } else if (currLev == 1){ //grid with wall
             PS.gridColor(PUZZLE.WALL_GRID);
             PS.gridPlane(PUZZLE.WALL_GRID);
+
          } else { //grid with enemy
             PS.gridColor(PUZZLE.ENEMY_GRID);
          }
@@ -78,6 +95,8 @@ Any value returned is ignored.
      }
 };
 
+
+};
 
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
@@ -239,11 +258,46 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 // UNCOMMENT the following code BLOCK to expose the PS.keyDown() event handler:
 
-/*
+
 
 PS.keyDown = function( key, shift, ctrl, options ) {
 	"use strict"; // Do not remove this directive!
 
+	switch( key )
+	{
+		case PS.KEY_ARROW_UP:
+		case 87:
+		case 119:
+		{
+			PUZZLE.movePlayer( 0, -1 );
+			break;
+		}
+		case PS.KEY_ARROW_RIGHT:
+		case 83:
+		case 115:
+		{
+			PUZZLE.movePlayer( 1, 0 );
+			break;
+		}
+		case PS.KEY_ARROW_DOWN:
+		case 65:
+		case 97:
+		{
+			PUZZLE.movePlayer( 0, 1 );
+			break;
+		}
+		case PS.KEY_ARROW_LEFT:
+		case 68:
+		case 100:
+		{
+			PUZZLE.movePlayer( -1, 0 );
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 	// Uncomment the following code line to inspect first three parameters:
 
 	// PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
@@ -251,7 +305,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	// Add code here for when a key is pressed.
 };
 
-*/
+
 
 /*
 PS.keyUp ( key, shift, ctrl, options )
