@@ -272,7 +272,7 @@ Called when a supported input device event (other than those above) is detected.
 This function doesn't have to do anything. Any value returned is ignored.
 [sensors : Object] = A JavaScript object with properties indicating sensor status; see API documentation for details.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
-NOTE: Currently, only mouse wheel events are reported, and only when the mouse cursor is positioned directly over the grid.
+NOTE: Currently, only mouse wheel events are reported, an d only when the mouse cursor is positioned directly over the grid.
 */
 
 // UNCOMMENT the following code BLOCK to expose the PS.input() event handler:
