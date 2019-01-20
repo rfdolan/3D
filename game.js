@@ -83,7 +83,7 @@ var currLev = 0; //current level
          let ny = PUZZLE.playery + y;
 
          // If we are trying to move outside, the grid, abort the function
-         if(  !( ( ( 0 <=  nx ) && ( PUZZLE.GRID_SIZE-1 > nx ) ) || ( ( 0 <= ny ) && ( PUZZLE.GRID_SIZE > ny ) ) ) )
+         if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE-1 <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE <= ny ) )
          {
              return;
          }
