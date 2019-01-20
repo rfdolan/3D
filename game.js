@@ -49,38 +49,51 @@ Any value returned is ignored.
 */
 
 // UNCOMMENT the following code BLOCK to expose the PS.init() event handler:
+ var PUZZLE  = {
 
+     //grid colors
+    GOAL_GRID: 0x7A0ACF, //grid with goal
+     ENEMY_GRID: 0x000000, //grid with enemy
+     WALL_GRID: 0xFFB305, //grid with wall
+     WALL_GRID2: 0XFF5105, //another color for grid with goal
+
+    //sprite colors
+    GOAL_COLOR: 0XF8FF01, //color of goal
+     PLAYER_COLOR: 0X57C493, //color of player
+     ENEMY_COLOR: 0XFF0000, //enemy color
+     WALL_COLOR: 0X897CA1, //wall color
+
+     DrawMap : function(currLev){
+        if (currLev == 0){ //grid with goal
+            PS.gridColor(PUZZLE.GOAL_GRID);
+            PS.gridPlane(PUZZLE.GOAL_GRID);
+         } else if (currLev == 1){ //grid with wall
+            PS.gridColor(PUZZLE.WALL_GRID);
+            PS.gridPlane(PUZZLE.WALL_GRID);
+         } else { //grid with enemy
+            PS.gridColor(PUZZLE.ENEMY_GRID);
+         }
+
+
+     }
+};
 
 
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
 
-	// Uncomment the following code line
-	// to verify operation:
+    //current level
+    let currLev = 0;
 
-	// PS.debug( "PS.init() called\n" );
+    //grid size
+    PS.gridSize( 8, 8 );
 
-	// This function should normally begin
-	// with a call to PS.gridSize( x, y )
-	// where x and y are the desired initial
-	// dimensions of the grid.
-	// Call PS.gridSize() FIRST to avoid problems!
-	// The sample call below sets the grid to the
-	// default dimensions (8 x 8).
-	// Uncomment the following code line and change
-	// the x and y parameters as needed.
+    //instructions
+    PS.statusText( "Press Arrow Keys or Space" );
 
-	PS.gridSize( 8, 8 );
+    PUZZLE.DrawMap(currLev);
 
-	// This is also a good place to display
-	// your game title or a welcome message
-	// in the status line above the grid.
-	// Uncomment the following code line and
-	// change the string parameter as needed.
 
-	 PS.statusText( "Press Arrow Keys or Space" );
-
-	// Add any other initialization code you need here.
 };
 
 
