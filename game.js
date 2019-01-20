@@ -53,14 +53,17 @@ var currLev = 0;
 
  var PUZZLE  = {
 
-     //grid colors
-    GOAL_GRID: 0x7A0ACF, //grid with goal
-     ENEMY_GRID: 0x000000, //grid with enemy
-     WALL_GRID: 0xFFB305, //grid with wall
-     WALL_GRID2: 0XFF5105, //another color for grid with goal
+     GRID_SIZE: 8,
 
-    //sprite colors
-    GOAL_COLOR: 0XF8FF01, //color of goal
+     //grid colors
+     GOAL_GRID: 0x7A0ACF, //grid with goal 0
+     ENEMY_GRID: 0x000000, //grid with enemy 2
+     WALL_GRID: 0xFFB305, //grid with wall 1
+     WALL_GRID2: 0XFF5105, //another color for grid with goal
+     CURRENT_BACKGROUND: 0x7A0ACF,
+
+     //sprite colors
+     GOAL_COLOR: 0XF8FF01, //color of goal
      PLAYER_COLOR: 0X57C493, //color of player
      ENEMY_COLOR: 0XFF0000, //enemy color
      WALL_COLOR: 0X897CA1, //wall color
@@ -71,36 +74,43 @@ var currLev = 0;
      movePlayer : function ( x, y ) //move player
      {
 
-         if( ( 0 <= ( PUZZLE.playerx + x ) && ( 32 > ( PUZZLE.playerx + x ) ) ) )
+         let nx = PUZZLE.playerx + x;
+         let ny = PUZZLE.playery + y;
+
+         // If we are trying to move outside, the grid, abort the function
+         if(  !( ( ( 0 <=  nx ) && ( PUZZLE.GRID_SIZE-1 > nx ) ) || ( ( 0 <= ny ) && ( PUZZLE.GRID_SIZE > ny ) ) ) )
          {
-             PUZZLE.playerx += x;
+             return;
          }
-         if( ( 0 <= ( PUZZLE.playery + y ) && ( 32 > ( PUZZLE.playery + y ) ) ) )
-         {
-             PUZZLE.playery += y;
-         }
+
+         // move the player to the desired square
+         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
+         PS.color( nx, ny, PUZZLE.PLAYER_COLOR );
+         PUZZLE.playerx = nx;
+         PUZZLE.playery = ny;
+
      },
 
-     DrawMap : function(currLev){
-        if (currLev == 0){ //grid with goal
-            PS.gridColor(PUZZLE.GOAL_GRID);
-            PS.color (PS.ALL, PS.ALL, PUZZLE.GOAL_GRID);
-            PS.borderColor(PS.ALL, PS.ALL, PUZZLE.GOAL_GRID);
+     DrawMap : function(currLev)
+     {
+         PS.gridColor( PUZZLE.CURRENT_BACKGROUND );
+         PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
+         PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
+        if (currLev == 0)
+        { //grid with goal
             PS.statusColor(PS.COLOR_WHITE);
 
-         } else if (currLev == 1){ //grid with wall
-            PS.gridColor(PUZZLE.WALL_GRID);
-            PS.color (PS.ALL, PS.ALL, PUZZLE.WALL_GRID);
-            PS.borderColor(PS.ALL, PS.ALL, PUZZLE.WALL_GRID);
+        }
+        else if (currLev == 1)
+        { //grid with wall
             PS.statusColor(PS.COLOR_BLACK);
 
-         } else { //grid with enemy
-            PS.gridColor(PUZZLE.ENEMY_GRID);
-            PS.color (PS.ALL, PS.ALL, PUZZLE.ENEMY_GRID);
-            PS.borderColor(PS.ALL, PS.ALL, PUZZLE.ENEMY_GRID);
+        }
+        else
+        { //grid with enemy
             PS.statusColor(PS.COLOR_WHITE);
-         }
-
+        }
+        PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR );
 
      }
 };
@@ -299,10 +309,19 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 			break;
 		}
         case 32:
-            if( currLev < 2){ //if currlev can be increased
-                currLev += 1;
-            } else {
-                currLev = 0; //reset to zero
+            switch( currLev ) {
+                case 0:
+                    currLev = 1;
+                    PUZZLE.CURRENT_BACKGROUND = PUZZLE.WALL_GRID;
+                    break;
+                case 1:
+                    currLev = 2;
+                    PUZZLE.CURRENT_BACKGROUND = PUZZLE.ENEMY_GRID;
+                    break;
+                case 2:
+                    currLev = 0;
+                    PUZZLE.CURRENT_BACKGROUND = PUZZLE.GOAL_GRID;
+                    break;
             }
             PUZZLE.DrawMap(currLev);
             break;
