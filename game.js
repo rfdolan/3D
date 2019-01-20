@@ -48,7 +48,9 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
-// UNCOMMENT the following code BLOCK to expose the PS.init() event handler:
+//current level
+var currLev = 0;
+
  var PUZZLE  = {
 
      //grid colors
@@ -65,6 +67,7 @@ Any value returned is ignored.
 
      playerx: 0, //player x value
      playery: 0, //player y value
+
      movePlayer : function ( x, y ) //move player
      {
 
@@ -76,19 +79,26 @@ Any value returned is ignored.
          {
              PUZZLE.playery += y;
          }
-     }
+     },
 
      DrawMap : function(currLev){
         if (currLev == 0){ //grid with goal
             PS.gridColor(PUZZLE.GOAL_GRID);
-            PS.gridPlane(PUZZLE.GOAL_GRID);
+            PS.color (PS.ALL, PS.ALL, PUZZLE.GOAL_GRID);
+            PS.borderColor(PS.ALL, PS.ALL, PUZZLE.GOAL_GRID);
+            PS.statusColor(PS.COLOR_WHITE);
 
          } else if (currLev == 1){ //grid with wall
             PS.gridColor(PUZZLE.WALL_GRID);
-            PS.gridPlane(PUZZLE.WALL_GRID);
+            PS.color (PS.ALL, PS.ALL, PUZZLE.WALL_GRID);
+            PS.borderColor(PS.ALL, PS.ALL, PUZZLE.WALL_GRID);
+            PS.statusColor(PS.COLOR_BLACK);
 
          } else { //grid with enemy
             PS.gridColor(PUZZLE.ENEMY_GRID);
+            PS.color (PS.ALL, PS.ALL, PUZZLE.ENEMY_GRID);
+            PS.borderColor(PS.ALL, PS.ALL, PUZZLE.ENEMY_GRID);
+            PS.statusColor(PS.COLOR_WHITE);
          }
 
 
@@ -96,13 +106,8 @@ Any value returned is ignored.
 };
 
 
-};
-
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
-
-    //current level
-    let currLev = 0;
 
     //grid size
     PS.gridSize( 8, 8 );
@@ -293,6 +298,14 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 			PUZZLE.movePlayer( -1, 0 );
 			break;
 		}
+        case 32:
+            if( currLev < 2){ //if currlev can be increased
+                currLev += 1;
+            } else {
+                currLev = 0; //reset to zero
+            }
+            PUZZLE.DrawMap(currLev);
+            break;
 		default:
 		{
 			break;
