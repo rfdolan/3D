@@ -50,7 +50,7 @@ Any value returned is ignored.
 
 // UNCOMMENT the following code BLOCK to expose the PS.init() event handler:
 
-/*
+
 
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
@@ -70,7 +70,7 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and change
 	// the x and y parameters as needed.
 
-	// PS.gridSize( 8, 8 );
+	PS.gridSize( 8, 8 );
 
 	// This is also a good place to display
 	// your game title or a welcome message
@@ -83,7 +83,7 @@ PS.init = function( system, options ) {
 	// Add any other initialization code you need here.
 };
 
-*/
+
 
 /*
 PS.touch ( x, y, data, options )
