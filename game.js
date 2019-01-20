@@ -48,8 +48,8 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
-//current level
-var currLev = 0;
+var currDim = 1; //current  dimension
+var currLev = 0; //current level
 
  var PUZZLE  = {
 
@@ -68,6 +68,11 @@ var currLev = 0;
      playerx: 0, //player x value
      playery: 0, //player y value
 
+     //variables for walls
+     data: 0, //will hold current value in array
+
+     gridSize: 8,
+
      movePlayer : function ( x, y ) //move player
      {
 
@@ -81,20 +86,58 @@ var currLev = 0;
          }
      },
 
-     DrawMap : function(currLev){
-        if (currLev == 0){ //grid with goal
+     DrawMap : function(currDim){
+        if (currDim=== 0){ //grid with goal
+            //change color of entire grid and status line
             PS.gridColor(PUZZLE.GOAL_GRID);
             PS.color (PS.ALL, PS.ALL, PUZZLE.GOAL_GRID);
             PS.borderColor(PS.ALL, PS.ALL, PUZZLE.GOAL_GRID);
             PS.statusColor(PS.COLOR_WHITE);
 
-         } else if (currLev == 1){ //grid with wall
+
+
+         } else if (currDim=== 1){ //grid with wall
+            //change color of entire grid and status
             PS.gridColor(PUZZLE.WALL_GRID);
             PS.color (PS.ALL, PS.ALL, PUZZLE.WALL_GRID);
             PS.borderColor(PS.ALL, PS.ALL, PUZZLE.WALL_GRID);
             PS.statusColor(PS.COLOR_BLACK);
 
+
+            //draw walls based on level
+            switch(currLev){
+                case 0: //level 0
+
+                    //2d array for wall positions
+                    map8 = [ //1 represents where walls are going to be positioned
+                        0,0,0,0,1,0,0,0,
+                        0,0,0,0,1,0,0,0,
+                        0,0,0,0,1,0,0,0,
+                        0,0,1,0,1,0,1,0,
+                        0,0,1,0,1,0,1,0,
+                        0,0,1,0,0,0,1,0,
+                        0,0,1,0,0,0,1,0,
+                        0,0,1,0,0,0,1,0,
+                    ];
+                    //iterate through map array
+                    for(curry = 0; curry < PUZZLE.gridSize; curry+=1){
+                        for(currx = 0; currx < PUZZLE.gridSize; currx+= 1){
+                            PUZZLE.data = map8[(curry*PUZZLE.gridSize) + currx]; //get current position in array
+                            if(PUZZLE.data === 1){
+                                //make the walls appear
+                                PS.color(currx, curry, PUZZLE.WALL_COLOR);
+                                PS.borderColor(currx, curry, PUZZLE.WALL_COLOR);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+
          } else { //grid with enemy
+            //change color of entire grid and status
             PS.gridColor(PUZZLE.ENEMY_GRID);
             PS.color (PS.ALL, PS.ALL, PUZZLE.ENEMY_GRID);
             PS.borderColor(PS.ALL, PS.ALL, PUZZLE.ENEMY_GRID);
@@ -299,12 +342,12 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 			break;
 		}
         case 32:
-            if( currLev < 2){ //if currlev can be increased
-                currLev += 1;
+            if( currDim < 2){ //if currDim can be increased
+                currDim += 1;
             } else {
-                currLev = 0; //reset to zero
+                currDim = 0; //reset to zero
             }
-            PUZZLE.DrawMap(currLev);
+            PUZZLE.DrawMap(currDim);
             break;
 		default:
 		{
