@@ -123,10 +123,11 @@ var currLev = 0; //current level
                         0,0,0,0,1,0,0,0,
                         0,0,1,0,1,0,1,0,
                         0,0,1,0,1,0,1,0,
-                        0,0,1,0,0,0,1,0,
+                        0,0,1,0,2,0,1,0, //2 signifies an enemy
                         0,0,1,0,0,0,1,0,
                         0,0,1,0,0,0,1,0,
                     ];
+
                     //iterate through map array
                     for(curry = 0; curry < PUZZLE.gridSize; curry+=1){
                         for(currx = 0; currx < PUZZLE.gridSize; currx+= 1){
