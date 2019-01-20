@@ -96,7 +96,7 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and
 	// change the string parameter as needed.
 
-	// PS.statusText( "Game" );
+	 PS.statusText( "Press Arrow Keys or Space" );
 
 	// Add any other initialization code you need here.
 };
