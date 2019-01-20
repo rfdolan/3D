@@ -50,7 +50,25 @@ Any value returned is ignored.
 
 // UNCOMMENT the following code BLOCK to expose the PS.init() event handler:
 
+var PUZZLE = {
 
+	playerx: 0,
+	playery: 0,
+	movePlayer : function ( x, y )
+	{
+
+		if( ( 0 <= ( PUZZLE.playerx + x ) && ( 32 > ( PUZZLE.playerx + x ) ) ) )
+		{
+			PUZZLE.playerx += x;
+		}
+		if( ( 0 <= ( PUZZLE.playery + y ) && ( 32 > ( PUZZLE.playery + y ) ) ) )
+		{
+			PUZZLE.playery += y;
+		}
+	}
+
+
+};
 
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
@@ -226,11 +244,46 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 // UNCOMMENT the following code BLOCK to expose the PS.keyDown() event handler:
 
-/*
+
 
 PS.keyDown = function( key, shift, ctrl, options ) {
 	"use strict"; // Do not remove this directive!
 
+	switch( key )
+	{
+		case PS.KEY_ARROW_UP:
+		case 87:
+		case 119:
+		{
+			PUZZLE.movePlayer( 0, -1 );
+			break;
+		}
+		case PS.KEY_ARROW_RIGHT:
+		case 83:
+		case 115:
+		{
+			PUZZLE.movePlayer( 1, 0 );
+			break;
+		}
+		case PS.KEY_ARROW_DOWN:
+		case 65:
+		case 97:
+		{
+			PUZZLE.movePlayer( 0, 1 );
+			break;
+		}
+		case PS.KEY_ARROW_LEFT:
+		case 68:
+		case 100:
+		{
+			PUZZLE.movePlayer( -1, 0 );
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 	// Uncomment the following code line to inspect first three parameters:
 
 	// PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
@@ -238,7 +291,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	// Add code here for when a key is pressed.
 };
 
-*/
+
 
 /*
 PS.keyUp ( key, shift, ctrl, options )
