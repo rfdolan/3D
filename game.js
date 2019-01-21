@@ -74,7 +74,19 @@ var currLev = 0; //current level
      //variables for walls
      data: 0, //will hold current value in array
 
-     gridSize: 8,
+     //2d array for wall positions
+     map0: [ //level0
+         0,0,0,1,0,0,0,0, //1 represents where walls are going to be positioned
+         0,0,0,1,0,0,0,0,
+         0,0,0,1,0,0,0,0,
+         0,1,0,1,0,1,0,0,
+         0,1,0,1,0,1,0,0,
+         0,1,0,2,0,1,0,0, //2 signifies an enemy
+         0,1,0,0,0,1,0,0,
+         0,1,0,0,0,1,0,0,
+     ],
+
+    gridSize: 8,
 
      movePlayer : function ( x, y ) //move player
      {
@@ -116,21 +128,11 @@ var currLev = 0; //current level
             switch(currLev){
                 case 0: //level 0
 
-                    //2d array for wall positions
-                    map8 = [ //1 represents where walls are going to be positioned
-                        0,0,0,0,1,0,0,0,
-                        0,0,0,0,1,0,0,0,
-                        0,0,0,0,1,0,0,0,
-                        0,0,1,0,1,0,1,0,
-                        0,0,1,0,1,0,1,0,
-                        0,0,1,0,0,0,1,0,
-                        0,0,1,0,0,0,1,0,
-                        0,0,1,0,0,0,1,0,
-                    ];
+
                     //iterate through map array
                     for(curry = 0; curry < PUZZLE.gridSize; curry+=1){
                         for(currx = 0; currx < PUZZLE.gridSize; currx+= 1){
-                            PUZZLE.data = map8[(curry*PUZZLE.gridSize) + currx]; //get current position in array
+                            PUZZLE.data = PUZZLE.map0[(curry*PUZZLE.gridSize) + currx]; //get current position in array
                             if(PUZZLE.data === 1){
                                 //make the walls appear
                                 PS.color(currx, curry, PUZZLE.WALL_COLOR);
