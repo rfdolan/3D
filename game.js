@@ -118,14 +118,14 @@ var currLev = 0; //current level
 
                     //2d array for wall positions
                     map8 = [ //1 represents where walls are going to be positioned
-                        0,0,0,0,1,0,0,0,
-                        0,0,0,0,1,0,0,0,
-                        0,0,0,0,1,0,0,0,
-                        0,0,1,0,1,0,1,0,
-                        0,0,1,0,1,0,1,0,
-                        0,0,1,0,2,0,1,0, //2 signifies an enemy
-                        0,0,1,0,0,0,1,0,
-                        0,0,1,0,0,0,1,0,
+                        0,0,0,1,0,0,0,0,
+                        0,0,0,1,0,0,0,0,
+                        0,0,0,1,0,0,0,0,
+                        0,1,0,1,0,1,0,0,
+                        0,1,0,1,0,1,0,0,
+                        0,1,0,2,0,1,0,0, //2 signifies an enemy
+                        0,1,0,0,0,1,0,0,
+                        0,1,0,0,0,1,0,0,
                     ];
 
                     //iterate through map array
