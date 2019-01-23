@@ -118,7 +118,7 @@ var currLev = 0; //current level
      },
 
      DrawMap : function(currDim){
-        //change color of entire grif
+        //change color of entire grid
          PS.gridColor( PUZZLE.CURRENT_BACKGROUND );
          PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
          PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
@@ -162,6 +162,8 @@ var currLev = 0; //current level
          } else { //grid with enemy
             PS.statusColor(PS.COLOR_WHITE); //change status color
         }
+
+         // Move the player to the right spot
         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR );
 
      }
@@ -365,6 +367,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 			break;
 		}
         case 32:
+            // Update the current level and the current background color
             switch( currDim ) {
                 case 0:
                     currDim = 1;
@@ -379,6 +382,8 @@ PS.keyDown = function( key, shift, ctrl, options ) {
                     PUZZLE.CURRENT_BACKGROUND = PUZZLE.GOAL_GRID;
                     break;
             }
+
+            // Redraw the map
             PUZZLE.DrawMap(currDim);
             break;
 		default:
