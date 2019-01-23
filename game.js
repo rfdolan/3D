@@ -72,7 +72,7 @@ var currLev = 0; //current level
      playery: 0, //player y value
 
      //variables for walls
-     data: 0, //will hold current value in array
+//     data: 0, //will hold current value in array
 
      //2d array for wall positions
      map0: [ //level0
@@ -82,8 +82,8 @@ var currLev = 0; //current level
          0,1,0,1,0,1,0,0,
          0,1,0,1,0,1,0,0,
          0,1,0,2,0,1,0,0, //2 signifies an enemy
-         0,1,0,0,0,1, 0,0,
          0,1,0,0,0,1,0,0,
+         0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
 
     gridSize: 8,
@@ -95,77 +95,162 @@ var currLev = 0; //current level
          let ny = PUZZLE.playery + y;
 
          // If we are trying to move outside, the grid, abort the function
-         if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE -1 <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
+         if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
          {
              return;
          }
+
          //check if we are touching goal
-         if ( (currLev === 0) &&(currDim === 0) && (nx === 6) && (ny === 7)){
-             PS.audioLoad("fx_ding"); //play triumphant sound NOT WORKING
+         if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
+         {
+             PS.audioPlay("fx_ding"); //play triumphant sound
              currLev += 1; //go to next level
              nx = 0; //restart player position
              ny = 0;
              PS.color(6, 7, PUZZLE.CURRENT_BACKGROUND); //goal disappears
+         }
 
+         // If we are trying to move into a wall, abort
+         if(PS.data(nx, ny, PS.CURRENT) === 1)
+         {
+             PS.audioPlay("xylo_gb5");
+             return;
+         }
+
+         // Reset the color of the bead the player was just on
+         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
+
+         // if the player is moving into an enemy, reset their position
+         if(PS.data(nx, ny, PS.CURRENT) === 2)
+         {
+             PS.color( 0, 0, PUZZLE.PLAYER_COLOR);
+             PUZZLE.playerx = 0;
+             PUZZLE.playery = 0;
+             PS.audioPlay("xylo_d5"); // Play a sad sound
+             return;
          }
 
          // move the player to the desired square
-         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
          PS.color( nx, ny, PUZZLE.PLAYER_COLOR );
          PUZZLE.playerx = nx;
          PUZZLE.playery = ny;
-
+         PS.audioPlay("xylo_a5"); // Play a happy sound
      },
 
-     DrawMap : function(currDim){
+     DrawMap : function(currDim)
+     {
         //change color of entire grid
-         PS.gridColor( PUZZLE.CURRENT_BACKGROUND );
-         PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
-         PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
+        PS.gridColor( PUZZLE.CURRENT_BACKGROUND );
+        PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
+        PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
 
-         if (currDim=== 0){ //grid with goal
-            PS.statusColor(PS.COLOR_WHITE); //change status color
+        // Set the data value of each bead according to level
+        switch(currLev)
+        {
+            case 0:
 
-            switch(currLev){
-                case 0: //level 0
-                    PS.color(6, 7, PUZZLE.GOAL_COLOR); //draw goal
-
-            }
-
-         } else if (currDim=== 1){ //grid with wall
-
-            PS.statusColor(PS.COLOR_BLACK); //change status color
-
-
-            //draw walls based on level
-            switch(currLev){
-                case 0: //level 0
-
-
-                    //iterate through map array
-                    for(curry = 0; curry < PUZZLE.gridSize; curry+=1){
-                        for(currx = 0; currx < PUZZLE.gridSize; currx+= 1){
-                            PUZZLE.data = PUZZLE.map0[(curry*PUZZLE.gridSize) + currx]; //get current position in array
-                            if(PUZZLE.data === 1){
-                                //make the walls appear
-                                PS.color(currx, curry, PUZZLE.WALL_COLOR);
-                                PS.borderColor(currx, curry, PUZZLE.WALL_COLOR);
-                            }
+                // Loop through the grid and set each bead's data
+                for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+                {
+                    for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
+                    {
+                        let currBead = PUZZLE.map0[(curry*PUZZLE.gridSize) + currx];
+                        if(currBead === 0)
+                        {
+                            PS.data(currx, curry, 0);
+                        }
+                        else if(currBead === 1)
+                        {
+                            PS.data(currx, curry, 1);
+                        }
+                        else if(currBead === 2)
+                        {
+                            PS.data(currx, curry, 2);
+                        }
+                        else if(currBead === -1)
+                        {
+                            PS.data(currx, curry, -1);
                         }
                     }
-                    break;
-                default:
-                    break;
-            }
-
-
-         } else { //grid with enemy
-            PS.statusColor(PS.COLOR_WHITE); //change status color
+                }
         }
 
-         // Move the player to the right spot
-        PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR );
+        // Draw the correct things depending on dimension
+        switch(currDim)
+        {
 
+            // Here we should draw the goal
+            case 0:
+                PS.statusColor(PS.COLOR_WHITE);
+                for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+                {
+                    for(let currx = 0; currx < PUZZLE.gridSize; currx+= 1)
+                    {
+                        if (PS.data(currx, curry, PS.CURRENT) === -1)
+                        {
+                            //make the goal appear
+                            PS.color(currx, curry, PUZZLE.GOAL_COLOR);
+                            PS.borderColor(currx, curry, PUZZLE.GOAL_COLOR);
+                        }
+                    }
+                }
+                break;
+
+            // Draw the walls
+            case 1:
+
+                PS.statusColor(PS.COLOR_BLACK); //change status color
+                //iterate through map array
+                for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+                {
+                   for(let currx = 0; currx < PUZZLE.gridSize; currx+= 1)
+                   {
+                       if (PS.data(currx, curry, PS.CURRENT) === 1)
+                       {
+                           //make the walls appear
+                           PS.color(currx, curry, PUZZLE.WALL_COLOR);
+                           PS.borderColor(currx, curry, PUZZLE.WALL_COLOR);
+                       }
+                   }
+
+                }
+                break;
+
+            //Draw the enemies
+            case 2:
+
+                PS.statusColor(PS.COLOR_WHITE); //change status color
+                //iterate through map array
+                for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+                {
+                    for(let currx = 0; currx < PUZZLE.gridSize; currx+= 1)
+                    {
+                        if (PS.data(currx, curry, PS.CURRENT) === 2)
+                        {
+                            //make the enemies appear
+                            PS.color(currx, curry, PUZZLE.ENEMY_COLOR);
+                            PS.borderColor(currx, curry, PUZZLE.ENEMY_COLOR);
+                        }
+                    }
+
+                }
+                break;
+        }
+         // Move the player to the right spot
+         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR );
+         PS.timerStart( 6, PUZZLE.tick );
+     },
+
+     tick : function()
+     {
+         if(currDim === 0 && (PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
+         {
+             currLev += 1;
+             PUZZLE.playerx = 0;
+             PUZZLE.playery = 0;
+             PS.audioPlay("fx_ding");
+             PUZZLE.DrawMap(0);
+         }
      }
 };
 
@@ -338,7 +423,6 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 87:
 		case 119:
 		{
-		    PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( 0, -1 );
 			break;
 		}
@@ -346,7 +430,6 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 83:
 		case 115:
 		{
-            PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( 1, 0 );
 			break;
 		}
@@ -354,7 +437,6 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 65:
 		case 97:
 		{
-            PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( 0, 1 );
 			break;
 		}
@@ -362,7 +444,6 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 68:
 		case 100:
 		{
-            PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( -1, 0 );
 			break;
 		}
