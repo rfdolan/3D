@@ -48,7 +48,7 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
-var currDim = 1; //current  dimension
+var currDim = 0; //current  dimension
 var currLev = 0; //current level
 
  var PUZZLE  = {
@@ -82,7 +82,7 @@ var currLev = 0; //current level
          0,1,0,1,0,1,0,0,
          0,1,0,1,0,1,0,0,
          0,1,0,2,0,1,0,0, //2 signifies an enemy
-         0,1,0,0,0,1,0,0,
+         0,1,0,0,0,1, 0,0,
          0,1,0,0,0,1,0,0,
      ],
 
@@ -95,9 +95,18 @@ var currLev = 0; //current level
          let ny = PUZZLE.playery + y;
 
          // If we are trying to move outside, the grid, abort the function
-         if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE-1 <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE <= ny ) )
+         if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE -1 <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
          {
              return;
+         }
+         //check if we are touching goal
+         if ( (currLev === 0) &&(currDim === 0) && (nx === 6) && (ny === 7)){
+             PS.audioLoad("fx_ding"); //play triumphant sound NOT WORKING
+             currLev += 1; //go to next level
+             nx = 0; //restart player position
+             ny = 0;
+             PS.color(6, 7, PUZZLE.CURRENT_BACKGROUND); //goal disappears
+
          }
 
          // move the player to the desired square
@@ -117,7 +126,11 @@ var currLev = 0; //current level
          if (currDim=== 0){ //grid with goal
             PS.statusColor(PS.COLOR_WHITE); //change status color
 
+            switch(currLev){
+                case 0: //level 0
+                    PS.color(6, 7, PUZZLE.GOAL_COLOR); //draw goal
 
+            }
 
          } else if (currDim=== 1){ //grid with wall
 
@@ -323,6 +336,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 87:
 		case 119:
 		{
+		    PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( 0, -1 );
 			break;
 		}
@@ -330,6 +344,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 83:
 		case 115:
 		{
+            PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( 1, 0 );
 			break;
 		}
@@ -337,6 +352,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 65:
 		case 97:
 		{
+            PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( 0, 1 );
 			break;
 		}
@@ -344,21 +360,22 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 68:
 		case 100:
 		{
+            PS.audioLoad("fx_click");
 			PUZZLE.movePlayer( -1, 0 );
 			break;
 		}
         case 32:
-            switch( currLev ) {
+            switch( currDim ) {
                 case 0:
-                    currLev = 1;
+                    currDim = 1;
                     PUZZLE.CURRENT_BACKGROUND = PUZZLE.WALL_GRID;
                     break;
                 case 1:
-                    currLev = 2;
+                    currDim = 2;
                     PUZZLE.CURRENT_BACKGROUND = PUZZLE.ENEMY_GRID;
                     break;
                 case 2:
-                    currLev = 0;
+                    currDim = 0;
                     PUZZLE.CURRENT_BACKGROUND = PUZZLE.GOAL_GRID;
                     break;
             }
