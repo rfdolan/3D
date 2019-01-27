@@ -84,11 +84,11 @@ var currLev = 0; //current level
          0,0,0,0,0,0,0,0,
      ],
      map1: [ // level 1
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
          0,0,0,0,1,0,0,-1,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
          0,0,0,0,1,0,0,0,
          0,0,0,0,0,0,0,0,
          0,0,0,0,1,0,0,0,
@@ -105,7 +105,7 @@ var currLev = 0; //current level
          0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
 
-     map5: [ // level 5
+     map3: [ // level 5
          0,3,0,0,0,0,0,0,
          3,3,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,
@@ -168,6 +168,7 @@ var currLev = 0; //current level
          {
              PS.audioPlay("fx_ding"); //play triumphant sound
              currLev += 1; //go to next level
+             PUZZLE.SetLevelData(currLev);
              nx = 0; //restart player position
              ny = 0;
          }
@@ -182,6 +183,23 @@ var currLev = 0; //current level
          PUZZLE.DrawMap(currDim);
      },
 
+     SetLevelData : function(currLev)
+     {
+
+         let currMap = PUZZLE.maps[currLev];
+
+         // Set the data values of every bead on the grid based on the map for the current level
+         for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
+         {
+             for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+             {
+
+                 let currBead = currMap[(curry*PUZZLE.gridSize) + currx];
+                 PS.data(currx, curry, currBead);
+             }
+         }
+     },
+
      DrawMap : function(currDim)
      {
         //change color of entire grid
@@ -189,18 +207,6 @@ var currLev = 0; //current level
         PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
         PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
 
-        let currMap = PUZZLE.maps[currLev];
-
-        // Set the data values of every bead on the grid based on the map for the current level
-        for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
-        {
-            for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
-            {
-
-                let currBead = currMap[(curry*PUZZLE.gridSize) + currx];
-                PS.data(currx, curry, currBead);
-            }
-        }
 
         // Draw the correct things depending on dimension
         switch(currDim)
@@ -285,6 +291,7 @@ var currLev = 0; //current level
              if((PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
              {
                  currLev += 1;
+                 PUZZLE.SetLevelData(currLev);
                  PUZZLE.playerx = 0;
                  PUZZLE.playery = 0;
                  PS.audioPlay("fx_ding");
@@ -307,12 +314,9 @@ var currLev = 0; //current level
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
 
+
     //grid size
-    if (currLev < 5){
-        PS.gridSize( 8, 8 );
-    } else if ((currLev > 4) && (currLev < 9)){
-        PS.gridSize(16, 16);
-    }
+    PS.gridSize( 8, 8 );
 
 
     //instructions
@@ -322,7 +326,9 @@ PS.init = function( system, options ) {
     PUZZLE.maps[0] = PUZZLE.map0;
     PUZZLE.maps[1] = PUZZLE.map1;
     PUZZLE.maps[2] = PUZZLE.map2;
-    PUZZLE.maps[3] = PUZZLE.map5;
+    PUZZLE.maps[3] = PUZZLE.map3;
+
+    PUZZLE.SetLevelData(currLev);
     PUZZLE.DrawMap(currDim);
 
 
