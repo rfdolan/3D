@@ -59,8 +59,8 @@ var currLev = 0; //current level
      GOAL_GRID: 0x7A0ACF, //grid with goal 0
      ENEMY_GRID: 0x000000, //grid with enemy 2
      WALL_GRID: 0xFFB305, //grid with wall 1
-
-     WALL_GRID2: 0XFF5105, //another color for grid with goal
+     WALL_GRID2: 0XFF5105, //another color for grid with wall
+     WALL_GRID3: 0x0E5D3E,  //another color for grid with wall
      CURRENT_BACKGROUND: 0x7A0ACF,
 
      //sprite colors
@@ -74,11 +74,11 @@ var currLev = 0; //current level
      playery: 0, //player y value
 
      map0: [ // level 0
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,-1,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,
@@ -90,8 +90,8 @@ var currLev = 0; //current level
          0,0,0,0,1,0,0,0,
          0,0,0,0,1,0,0,-1,
          0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
          0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,
      ],
 
      map2: [ //level 2
@@ -308,7 +308,12 @@ PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
 
     //grid size
-    PS.gridSize( 8, 8 );
+    if (currLev < 5){
+        PS.gridSize( 8, 8 );
+    } else if ((currLev > 4) && (currLev < 9)){
+        PS.gridSize(16, 16);
+    }
+
 
     //instructions
     PS.statusText( "Press Arrow Keys or Space" );
@@ -506,7 +511,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
             switch( currDim ) {
                 case 0:
                     currDim = 1;
-                    PUZZLE.CURRENT_BACKGROUND = PUZZLE.WALL_GRID;
+                    PUZZLE.CURRENT_BACKGROUND = PUZZLE.WALL_GRID3;
                     break;
                 case 1:
                     currDim = 2;
