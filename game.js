@@ -50,7 +50,7 @@ Any value returned is ignored.
 
 var currDim = 0; //current  dimension
 var currLev = 0; //current level
-
+var moveCount = 0;
  var PUZZLE  = {
 
      GRID_SIZE: 8,
@@ -105,7 +105,7 @@ var currLev = 0; //current level
          0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
 
-     map5: [ // level 5
+     map3: [ // level 5
          0,3,0,0,0,0,0,0,
          3,3,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,
@@ -114,6 +114,17 @@ var currLev = 0; //current level
          0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,3,3,
          0,0,0,0,0,0,3,-1,
+     ],
+
+     map4: [ //temp
+         0,0,0,1,0,0,0,0, //1 represents where walls are going to be positioned
+         0,0,0,1,0,0,0,0,
+         0,0,0,1,0,0,0,0,
+         0,1,0,1,0,1,0,0,
+         0,1,0,1,0,1,0,0,
+         0,1,0,2,0,1,0,0, //2 signifies an enemy
+         0,1,0,0,0,1,0,0,
+         0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
 
      maps: [],
@@ -300,29 +311,29 @@ var currLev = 0; //current level
                  PUZZLE.DrawMap(0);
              }
          }
-     }
+     },
+
 };
 
 
 PS.init = function( system, options ) {
 	"use strict"; // Do not remove this directive!
+    moveCount =  0;
 
     //grid size
     if (currLev < 5){
         PS.gridSize( 8, 8 );
-    } else if ((currLev > 4) && (currLev < 9)){
-        PS.gridSize(16, 16);
     }
 
 
-    //instructions
-    PS.statusText( "Press Arrow Keys or Space" );
+
 
     // Put each map into the array of maps
     PUZZLE.maps[0] = PUZZLE.map0;
     PUZZLE.maps[1] = PUZZLE.map1;
     PUZZLE.maps[2] = PUZZLE.map2;
-    PUZZLE.maps[3] = PUZZLE.map5;
+    PUZZLE.maps[3] = PUZZLE.map3;
+    PUZZLE.maps[4] = PUZZLE.map4;
     PUZZLE.DrawMap(currDim);
 
 
@@ -482,6 +493,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 87:
 		case 119:
 		{
+		    moveCount++;
 			PUZZLE.movePlayer( 0, -1 );
 			break;
 		}
@@ -489,6 +501,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 83:
 		case 115:
 		{
+		    moveCount++;
 			PUZZLE.movePlayer( 1, 0 );
 			break;
 		}
@@ -496,6 +509,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 65:
 		case 97:
 		{
+		    moveCount++;
 			PUZZLE.movePlayer( 0, 1 );
 			break;
 		}
@@ -503,6 +517,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 68:
 		case 100:
 		{
+		    moveCount++;
 			PUZZLE.movePlayer( -1, 0 );
 			break;
 		}
