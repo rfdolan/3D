@@ -71,11 +71,28 @@ var currLev = 0; //current level
      playerx: 0, //player x value
      playery: 0, //player y value
 
-     //variables for walls
-//     data: 0, //will hold current value in array
+     map0: [ // level 0
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,-1,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+     ],
+     map1: [ // level 1
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,-1,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,0,0,0,0,
+     ],
 
-     //2d array for wall positions
-     map0: [ //level0
+     map2: [ //level 2
          0,0,0,1,0,0,0,0, //1 represents where walls are going to be positioned
          0,0,0,1,0,0,0,0,
          0,0,0,1,0,0,0,0,
@@ -85,6 +102,12 @@ var currLev = 0; //current level
          0,1,0,0,0,1,0,0,
          0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
+
+
+
+     maps: [],
+
+
 
     gridSize: 8,
 
@@ -108,6 +131,7 @@ var currLev = 0; //current level
              nx = 0; //restart player position
              ny = 0;
              PS.color(6, 7, PUZZLE.CURRENT_BACKGROUND); //goal disappears
+             PUZZLE.DrawMap(0);
          }
 
          // If we are trying to move into a wall, abort
@@ -144,35 +168,17 @@ var currLev = 0; //current level
         PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
         PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
 
-        // Set the data value of each bead according to level
-        switch(currLev)
-        {
-            case 0:
+        let currMap = PUZZLE.maps[currLev];
 
-                // Loop through the grid and set each bead's data
-                for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
-                {
-                    for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
-                    {
-                        let currBead = PUZZLE.map0[(curry*PUZZLE.gridSize) + currx];
-                        if(currBead === 0)
-                        {
-                            PS.data(currx, curry, 0);
-                        }
-                        else if(currBead === 1)
-                        {
-                            PS.data(currx, curry, 1);
-                        }
-                        else if(currBead === 2)
-                        {
-                            PS.data(currx, curry, 2);
-                        }
-                        else if(currBead === -1)
-                        {
-                            PS.data(currx, curry, -1);
-                        }
-                    }
-                }
+        // Set the data values of every bead on the grid based on the map for the current level
+        for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
+        {
+            for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+            {
+
+                let currBead = currMap[(curry*PUZZLE.gridSize) + currx];
+                PS.data(currx, curry, currBead);
+            }
         }
 
         // Draw the correct things depending on dimension
@@ -193,6 +199,8 @@ var currLev = 0; //current level
                             PS.borderColor(currx, curry, PUZZLE.GOAL_COLOR);
                         }
                     }
+
+
                 }
                 break;
 
@@ -238,11 +246,12 @@ var currLev = 0; //current level
         }
          // Move the player to the right spot
          PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR );
-         PS.timerStart( 6, PUZZLE.tick );
+         PS.timerStart( 1, PUZZLE.tick );
      },
 
      tick : function()
      {
+         // If the player has hit the goal, then increment the level counter and play a sound
          if(currDim === 0 && (PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
          {
              currLev += 1;
@@ -263,8 +272,10 @@ PS.init = function( system, options ) {
 
     //instructions
     PS.statusText( "Press Arrow Keys or Space" );
-
-    PUZZLE.DrawMap(currLev);
+    PUZZLE.maps[0] = PUZZLE.map0;
+    PUZZLE.maps[1] = PUZZLE.map1;
+    PUZZLE.maps[2] = PUZZLE.map2;
+    PUZZLE.DrawMap(currDim);
 
 
 };
