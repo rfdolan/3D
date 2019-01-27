@@ -68,7 +68,8 @@ var moveCount = 0;
      PLAYER_COLOR: 0X57C493, //color of player
      ENEMY_COLOR: 0XFF0000, //enemy color 2
      WALL_COLOR: 0X897CA1, //wall color 1
-     WALL1_COLOR: 0x946846, //single dimension wall color 3
+     WALL1_COLOR: 0xFF8E3B,
+     //0x946846, //single dimension wall color 3
 
      playerx: 0, //player x value
      playery: 0, //player y value
@@ -84,11 +85,11 @@ var moveCount = 0;
          0,0,0,0,0,0,0,0,
      ],
      map1: [ // level 1
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,1,0,0,0,
          0,0,0,0,1,0,0,-1,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
          0,0,0,0,1,0,0,0,
          0,0,0,0,0,0,0,0,
          0,0,0,0,1,0,0,0,
@@ -105,7 +106,7 @@ var moveCount = 0;
          0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
 
-     map3: [ // level 5
+     map3: [ // level 3
          0,3,0,0,0,0,0,0,
          3,3,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,
@@ -115,23 +116,87 @@ var moveCount = 0;
          0,0,0,0,0,0,3,3,
          0,0,0,0,0,0,3,-1,
      ],
+     map4: [ // level 4
+         0,0,0,3,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,3,1,0,1,1,
+         3,3,3,3,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         3,3,3,3,3,3,3,3,
+         0,0,0,0,2,0,0,0,
+         0,0,0,0,-1,2,0,0,
+     ],
+     map5: [ // level 5
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,
+         1,1,1,1,1,0,2,0,
+         3,3,3,3,3,3,3,3,
+         0,0,0,0,1,0,0,0,
+         0,0,0,0,2,0,0,0,
+         -1,0,0,0,0,0,0,0,
+     ],
+     map6: [ //level 6
+         0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,0,0,2,0,0,0,0,0,0,
+         3,3,3,3,0,0,0,1,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0,
+         1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,
+         0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+         3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,1,0,0,-1,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     ],
 
-     map4: [ //temp
-         0,0,0,1,0,0,0,0, //1 represents where walls are going to be positioned
-         0,0,0,1,0,0,0,0,
-         0,0,0,1,0,0,0,0,
-         0,1,0,1,0,1,0,0,
-         0,1,0,1,0,1,0,0,
-         0,1,0,2,0,1,0,0, //2 signifies an enemy
-         0,1,0,0,0,1,0,0,
-         0,1,0,0,0,1,0,-1, //-1 signifies the goal
+     map7: [ //level 7
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,3,-1,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,3,3,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         1,1,0,1,1,0,0,0,0,2,0,0,0,0,0,0,
+         0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,
+         0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,1,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+
+     ],
+
+     map8: [ //level 8
+         0,0,0,3,0,2,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,2,0,0,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,0,2,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,0,0,2,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,0,0,0,2,0,0,0,0,0,
+         0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,3,0,0,0,0,0,0,0,0,2,0,0,0,
+         1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         3,3,3,3,3,3,3,0,0,0,0,3,3,3,3,3,
+         0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
+         1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,-1,
      ],
 
      maps: [],
 
-
-
-    gridSize: 8,
+     gridSize: 0,
 
      movePlayer : function ( x, y ) //move player
      {
@@ -196,6 +261,14 @@ var moveCount = 0;
 
      SetLevelData : function(currLev)
      {
+         //update grid size
+         if(currLev > 5){
+             PUZZLE.GRID_SIZE = 16;
+             PUZZLE.gridSize  = 16;
+         } else{
+             PUZZLE.gridSize = 8;
+         }
+         PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
 
          let currMap = PUZZLE.maps[currLev];
 
@@ -295,6 +368,11 @@ var moveCount = 0;
 
      tick : function()
      {
+         if(currLev < 4){
+             PS.statusText( "Intro: Press arrow keys, space, or touch grid" );
+         } else {
+             PS.statusText( "Move Count: " + moveCount);
+         }
          // If the player is in dimension 0..
          if(currDim === 0 )
          {
@@ -329,7 +407,7 @@ PS.init = function( system, options ) {
 
 
     //grid size
-    PS.gridSize( 8, 8 );
+   // PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
 
 
 
@@ -340,6 +418,10 @@ PS.init = function( system, options ) {
     PUZZLE.maps[2] = PUZZLE.map2;
     PUZZLE.maps[3] = PUZZLE.map3;
     PUZZLE.maps[4] = PUZZLE.map4;
+    PUZZLE.maps[5] = PUZZLE.map5;
+    PUZZLE.maps[6] = PUZZLE.map6;
+    PUZZLE.maps[7] = PUZZLE.map7;
+    PUZZLE.maps[8] = PUZZLE.map8;
     PUZZLE.SetLevelData(currLev);
     PUZZLE.DrawMap(currDim);
 
@@ -500,7 +582,10 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 87:
 		case 119:
 		{
-		    moveCount++;
+		    if(currLev > 3 ){
+                moveCount++;
+            }
+
 			PUZZLE.movePlayer( 0, -1 );
 			break;
 		}
@@ -508,24 +593,33 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 83:
 		case 115:
 		{
-		    moveCount++;
-			PUZZLE.movePlayer( 1, 0 );
+            if(currLev > 3 ){
+                moveCount++;
+            }
+
+            PUZZLE.movePlayer( 1, 0 );
 			break;
 		}
 		case PS.KEY_ARROW_DOWN:
 		case 65:
 		case 97:
 		{
-		    moveCount++;
-			PUZZLE.movePlayer( 0, 1 );
+            if(currLev > 3 ){
+                moveCount++;
+            }
+
+            PUZZLE.movePlayer( 0, 1 );
 			break;
 		}
 		case PS.KEY_ARROW_LEFT:
 		case 68:
 		case 100:
 		{
-		    moveCount++;
-			PUZZLE.movePlayer( -1, 0 );
+            if(currLev > 3 ){
+                moveCount++;
+            }
+
+            PUZZLE.movePlayer( -1, 0 );
 			break;
 		}
         case 32:
