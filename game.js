@@ -59,14 +59,16 @@ var currLev = 0; //current level
      GOAL_GRID: 0x7A0ACF, //grid with goal 0
      ENEMY_GRID: 0x000000, //grid with enemy 2
      WALL_GRID: 0xFFB305, //grid with wall 1
+
      WALL_GRID2: 0XFF5105, //another color for grid with goal
      CURRENT_BACKGROUND: 0x7A0ACF,
 
      //sprite colors
-     GOAL_COLOR: 0XF8FF01, //color of goal
+     GOAL_COLOR: 0XF8FF01, //color of goal -1
      PLAYER_COLOR: 0X57C493, //color of player
-     ENEMY_COLOR: 0XFF0000, //enemy color
-     WALL_COLOR: 0X897CA1, //wall color
+     ENEMY_COLOR: 0XFF0000, //enemy color 2
+     WALL_COLOR: 0X897CA1, //wall color 1
+     WALL1_COLOR: 0x946846, //single dimension wall color 3
 
      playerx: 0, //player x value
      playery: 0, //player y value
@@ -103,7 +105,16 @@ var currLev = 0; //current level
          0,1,0,0,0,1,0,-1, //-1 signifies the goal
      ],
 
-
+     map5: [ // level 5
+         0,3,0,0,0,0,0,0,
+         3,3,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,3,3,
+         0,0,0,0,0,0,3,-1,
+     ],
 
      maps: [],
 
@@ -123,16 +134,6 @@ var currLev = 0; //current level
              return;
          }
 
-         //check if we are touching goal
-         if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
-         {
-             PS.audioPlay("fx_ding"); //play triumphant sound
-             currLev += 1; //go to next level
-             nx = 0; //restart player position
-             ny = 0;
-             PS.color(6, 7, PUZZLE.CURRENT_BACKGROUND); //goal disappears
-             PUZZLE.DrawMap(0);
-         }
 
          // If we are trying to move into a wall, abort
          if(PS.data(nx, ny, PS.CURRENT) === 1)
@@ -141,24 +142,44 @@ var currLev = 0; //current level
              return;
          }
 
-         // Reset the color of the bead the player was just on
-         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
+         // If we are trying to move into a grid specific wall, abort
+         if((PS.data(nx, ny, PS.CURRENT) === 3) && (currDim === 0))
+         {
+             PS.audioPlay("xylo_gb5");
+             return;
+         }
+
 
          // if the player is moving into an enemy, reset their position
          if(PS.data(nx, ny, PS.CURRENT) === 2)
          {
              PS.color( 0, 0, PUZZLE.PLAYER_COLOR);
+             PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND)
              PUZZLE.playerx = 0;
-             PUZZLE.playery = 0;
+             PUZZLE.playery = 0; 
+
              PS.audioPlay("xylo_d5"); // Play a sad sound
              return;
          }
 
+
+         //check if we are moveing into  goal
+         if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
+         {
+             PS.audioPlay("fx_ding"); //play triumphant sound
+             currLev += 1; //go to next level
+             nx = 0; //restart player position
+             ny = 0;
+         }
+
+         // Reset the color of the bead the player was just on
+         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
          // move the player to the desired square
          PS.color( nx, ny, PUZZLE.PLAYER_COLOR );
          PUZZLE.playerx = nx;
          PUZZLE.playery = ny;
          PS.audioPlay("xylo_a5"); // Play a happy sound
+         PUZZLE.DrawMap(currDim);
      },
 
      DrawMap : function(currDim)
@@ -185,7 +206,7 @@ var currLev = 0; //current level
         switch(currDim)
         {
 
-            // Here we should draw the goal
+            // Here we should draw the goal and any walls
             case 0:
                 PS.statusColor(PS.COLOR_WHITE);
                 for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
@@ -197,6 +218,12 @@ var currLev = 0; //current level
                             //make the goal appear
                             PS.color(currx, curry, PUZZLE.GOAL_COLOR);
                             PS.borderColor(currx, curry, PUZZLE.GOAL_COLOR);
+                        }
+                        else if (PS.data(currx, curry, PUZZLE.CURRENT) === 3)
+                        {
+                            //make the specific walls appear
+                            PS.color(currx, curry, PUZZLE.WALL1_COLOR);
+                            PS.borderColor(currx, curry, PUZZLE.WALL1_COLOR);
                         }
                     }
 
@@ -251,14 +278,27 @@ var currLev = 0; //current level
 
      tick : function()
      {
-         // If the player has hit the goal, then increment the level counter and play a sound
-         if(currDim === 0 && (PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
+         // If the player is in dimension 0..
+         if(currDim === 0 )
          {
-             currLev += 1;
-             PUZZLE.playerx = 0;
-             PUZZLE.playery = 0;
-             PS.audioPlay("fx_ding");
-             PUZZLE.DrawMap(0);
+             // If the player is touching the goal, go to the next level
+             if((PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
+             {
+                 currLev += 1;
+                 PUZZLE.playerx = 0;
+                 PUZZLE.playery = 0;
+                 PS.audioPlay("fx_ding");
+                 PUZZLE.DrawMap(0);
+             }
+
+             // If the player is going to teleport into a wall, kill them
+             else if(PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === 3)
+             {
+                 PUZZLE.playerx = 0;
+                 PUZZLE.playery = 0;
+                 PS.audioPlay("xylo_d5");
+                 PUZZLE.DrawMap(0);
+             }
          }
      }
 };
@@ -272,9 +312,12 @@ PS.init = function( system, options ) {
 
     //instructions
     PS.statusText( "Press Arrow Keys or Space" );
+
+    // Put each map into the array of maps
     PUZZLE.maps[0] = PUZZLE.map0;
     PUZZLE.maps[1] = PUZZLE.map1;
     PUZZLE.maps[2] = PUZZLE.map2;
+    PUZZLE.maps[3] = PUZZLE.map5;
     PUZZLE.DrawMap(currDim);
 
 
