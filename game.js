@@ -50,7 +50,7 @@ Any value returned is ignored.
 
 var currDim = 0; //current  dimension
 var currLev = 0; //current level
-var moveCount = 0;
+var moveCount = 0; //number of moves
  var PUZZLE  = {
 
      GRID_SIZE: 8,
@@ -68,11 +68,23 @@ var moveCount = 0;
      PLAYER_COLOR: 0X57C493, //color of player
      ENEMY_COLOR: 0XFF0000, //enemy color 2
      WALL_COLOR: 0X897CA1, //wall color 1
-     WALL1_COLOR: 0xFF8E3B,
+     WALL1_COLOR: 0xFF8E3B, //one dimensional wall color
      //0x946846, //single dimension wall color 3
+     //BLOCK_COLOR: 0x1976c6, // color of pushable block
 
      playerx: 0, //player x value
      playery: 0, //player y value
+
+     mapTest: [ // map used to test game elements
+         0,0,0,0,0,0,0,-1,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,4,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,
+     ],
 
      map0: [ // level 0
          0,0,0,0,0,0,0,-1,
@@ -193,6 +205,24 @@ var moveCount = 0;
          0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,
          0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,-1,
      ],
+     map9: [ //level 9
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     ],
 
      maps: [],
 
@@ -207,9 +237,9 @@ var moveCount = 0;
          // If we are trying to move outside, the grid, abort the function
          if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
          {
+             PS.audioPlay("xylo_gb5");
              return;
          }
-
 
          // If we are trying to move into a wall, abort
          if(PS.data(nx, ny, PS.CURRENT) === 1)
@@ -225,7 +255,6 @@ var moveCount = 0;
              return;
          }
 
-
          // if the player is moving into an enemy, reset their position
          if(PS.data(nx, ny, PS.CURRENT) === 2)
          {
@@ -233,13 +262,13 @@ var moveCount = 0;
              PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND)
              PUZZLE.playerx = 0;
              PUZZLE.playery = 0; 
-
              PS.audioPlay("xylo_d5"); // Play a sad sound
              return;
          }
 
+         // if the player is trying to move a block, check if it can be moved
 
-         //check if we are moveing into  goal
+         //check if we are moving into  goal
          if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
          {
              PS.audioPlay("fx_ding"); //play triumphant sound
@@ -259,6 +288,7 @@ var moveCount = 0;
          PUZZLE.DrawMap(currDim);
      },
 
+     // Set the ps.data values for each level, among other things
      SetLevelData : function(currLev)
      {
          //update grid size
@@ -266,6 +296,7 @@ var moveCount = 0;
              PUZZLE.GRID_SIZE = 16;
              PUZZLE.gridSize  = 16;
          } else{
+             PUZZLE.GRID_SIZE = 8;
              PUZZLE.gridSize = 8;
          }
          PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
@@ -284,6 +315,7 @@ var moveCount = 0;
          }
      },
 
+     // Draw the map of the current dimension
      DrawMap : function(currDim)
      {
         //change color of entire grid
@@ -291,12 +323,11 @@ var moveCount = 0;
         PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
         PS.borderColor( PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND);
 
-
         // Draw the correct things depending on dimension
         switch(currDim)
         {
 
-            // Here we should draw the goal and any walls
+            // Here we should draw the goal and any dimension specific walls
             case 0:
                 PS.statusColor(PS.COLOR_WHITE);
                 for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
@@ -316,8 +347,6 @@ var moveCount = 0;
                             PS.borderColor(currx, curry, PUZZLE.WALL1_COLOR);
                         }
                     }
-
-
                 }
                 break;
 
@@ -361,17 +390,30 @@ var moveCount = 0;
                 }
                 break;
         }
-         // Move the player to the right spot
-         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR );
+
+         // Move the player to the right spot (checking that they'll be somewhere in the grid)
+         if((PUZZLE.playerx < PUZZLE.GRID_SIZE) && (PUZZLE.playery < PUZZLE.GRID_SIZE))
+         {
+             PS.color(PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR);
+         }
          PS.timerStart( 1, PUZZLE.tick );
      },
 
      tick : function()
      {
-         if(currLev < 4){
+         // If we are in the tutorial, tell the player the controls
+         if(currLev < 4 ){
              PS.statusText( "Intro: Press arrow keys, space, or touch grid" );
-         } else {
+         }
+         // Show the player their move counter
+         else if( (currLev > 3) && (currLev < 9))
+         {
              PS.statusText( "Move Count: " + moveCount);
+         }
+         // They finished the game, so show their move count and restart instructions
+         else
+         {
+             PS.statusText( "Total moves: " + moveCount + ". Press 'R' to start over." );
          }
          // If the player is in dimension 0..
          if(currDim === 0 )
@@ -413,6 +455,7 @@ PS.init = function( system, options ) {
 
 
     // Put each map into the array of maps
+    //PUZZLE.maps[0] = PUZZLE.mapTest;
     PUZZLE.maps[0] = PUZZLE.map0;
     PUZZLE.maps[1] = PUZZLE.map1;
     PUZZLE.maps[2] = PUZZLE.map2;
@@ -422,6 +465,7 @@ PS.init = function( system, options ) {
     PUZZLE.maps[6] = PUZZLE.map6;
     PUZZLE.maps[7] = PUZZLE.map7;
     PUZZLE.maps[8] = PUZZLE.map8;
+    PUZZLE.maps[9] = PUZZLE.map9;
     PUZZLE.SetLevelData(currLev);
     PUZZLE.DrawMap(currDim);
 
@@ -583,45 +627,72 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		case 119:
 		{
 		    if(currLev > 3 ){
-                moveCount++;
+                moveCount+=1;
             }
 
 			PUZZLE.movePlayer( 0, -1 );
 			break;
 		}
 		case PS.KEY_ARROW_RIGHT:
-		case 83:
-		case 115:
+		case 68:
+		case 100:
 		{
             if(currLev > 3 ){
-                moveCount++;
+                moveCount+=1;
             }
 
             PUZZLE.movePlayer( 1, 0 );
 			break;
 		}
 		case PS.KEY_ARROW_DOWN:
-		case 65:
-		case 97:
+		case 83:
+		case 115:
 		{
             if(currLev > 3 ){
-                moveCount++;
+                moveCount+=1;
             }
 
             PUZZLE.movePlayer( 0, 1 );
 			break;
 		}
 		case PS.KEY_ARROW_LEFT:
-		case 68:
-		case 100:
+		case 65:
+		case 97:
 		{
             if(currLev > 3 ){
-                moveCount++;
+                moveCount+=1;
             }
 
             PUZZLE.movePlayer( -1, 0 );
 			break;
 		}
+
+		// R
+        case 82:
+        case 114:
+        {
+            // If the player pressed r at the end of the game
+            if (currLev === 9) {
+                // Set the level and dimension to 0
+                currLev = 0;
+                currDim = 0;
+
+                // Reset the player's position
+                PUZZLE.playerx = 0;
+                PUZZLE.playery = 0;
+                PUZZLE.CURRENT_BACKGROUND = PUZZLE.GOAL_GRID;
+
+                // Reset move count
+                moveCount = 0;
+
+                // Draw level 0
+                PUZZLE.SetLevelData(currLev);
+                PUZZLE.DrawMap(currDim);
+            }
+            break;
+        }
+
+        // Spacebar
         case 32:
             // Update the current level and the current background color
             switch( currDim ) {
@@ -637,8 +708,9 @@ PS.keyDown = function( key, shift, ctrl, options ) {
                     currDim = 0;
                     PUZZLE.CURRENT_BACKGROUND = PUZZLE.GOAL_GRID;
                     break;
-            }
 
+
+            }
             // Redraw the map
             PUZZLE.DrawMap(currDim);
             break;
