@@ -585,9 +585,14 @@ PS.enter = function( x, y, data, options ) {
         if(currLev === 0){
             PS.statusText( "Intro: Hover your mouse over the objects" );
         } else if (currLev === 1){
-            if(currDim === 0 ){ //first dimension
-                PS.statusText( "Intro: Press SPACE, see what happens!" );
+            if (currDim === 1) { //wall dimension
+                PS.statusText("You changed dimensions! Are those walls?");
+            } else  if (currDim === 2) { //enemy dimension
+                PS.statusText("There is nothing here...yet");
+            } else if(currDim === 0){
+                PS.statusText("Intro: Press SPACE, see what happens!");
             }
+
         } else if (currLev === 2){
             PS.statusText("Intro: a new foe has appeared...");
         } else if (currLev === 3){
