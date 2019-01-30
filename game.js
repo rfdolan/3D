@@ -145,9 +145,9 @@ var moveCount = 0;
          1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,
+         3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,
+         0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
          0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
          3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,
          0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
@@ -261,6 +261,19 @@ var moveCount = 0;
 
      SetLevelData : function(currLev)
      {
+
+         if(currLev === 0){
+             PS.statusText( "Intro: Hover your mouse over the objects" );
+         } else if (currLev === 1){
+             PS.statusText( "Intro: Press SPACE, see what happens!" );
+         } else if (currLev === 2){
+             PS.statusText("Intro: a new foe has appeared...");
+         } else if (currLev === 3){
+             PS.statusText("(Final)Intro: are those one dimensional walls?");
+         } else if (currLev == 4){
+             PS.statusText("START");
+         }
+
          //update grid size
          if(currLev > 5){
              PUZZLE.GRID_SIZE = 16;
@@ -368,11 +381,16 @@ var moveCount = 0;
 
      tick : function()
      {
+
+         /*
          if(currLev < 4){
-             PS.statusText( "Intro: Press arrow keys, space, or touch grid" );
-         } else {
+             PS.statusText( "Intro: Hover your mouse over the objects" );
+         }
+         */
+         if (currLev > 3){
              PS.statusText( "Move Count: " + moveCount);
          }
+
          // If the player is in dimension 0..
          if(currDim === 0 )
          {
@@ -408,7 +426,6 @@ PS.init = function( system, options ) {
 
     //grid size
    // PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
-
 
 
 
@@ -496,7 +513,6 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 // UNCOMMENT the following code BLOCK to expose the PS.enter() event handler:
 
-/*
 
 PS.enter = function( x, y, data, options ) {
 	"use strict"; // Do not remove this directive!
@@ -506,9 +522,46 @@ PS.enter = function( x, y, data, options ) {
 	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
 	// Add code here for when the mouse cursor/touch enters a bead.
+    let pos;
+
+    if(currLev < 4){
+        if(currLev === 0){
+            PS.statusText( "Intro: Hover your mouse over the objects" );
+        } else if (currLev === 1){
+            if(currDim === 0 ){ //first dimension
+                PS.statusText( "Intro: Press SPACE, see what happens!" );
+            }
+        } else if (currLev === 2){
+            PS.statusText("Intro: a new foe has appeared...");
+        } else if (currLev === 3){
+            PS.statusText("(Final)Intro: are those one dimensional walls?");
+        }
+
+
+        if( x === PUZZLE.playerx && y === PUZZLE.playery){ //see if we are hovering over player
+            PS.statusText("PLAYER: use arrow keys to move");
+        } else if (currDim === 0){ //check we are in th  goal dimension
+            pos = PS.data(x, y, PS.CURRENT); //get the value of the position of the mouse
+            if(pos === -1){ //see if it is the goal
+                PS.statusText("GOAL: try to reach me");
+            } else if ((pos === 3) && (currLev === 3)){
+                PS.statusText("WALL2: change dimensions to go through me");
+            }
+        } else if (currDim === 1){
+            pos = PS.data(x, y, PS.CURRENT);
+            if(pos === 1){
+                PS.statusText("WALL: you cannot go through me");
+            }
+        } else if (currDim === 2) {
+            pos = PS.data(x, y, PS.CURRENT);
+            if (pos === 2) {
+                PS.statusText("ENEMY: restarts level");
+            }
+        }
+
+    }
 };
 
-*/
 
 /*
 PS.exit ( x, y, data, options )
@@ -623,6 +676,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 			break;
 		}
         case 32:
+
             // Update the current level and the current background color
             switch( currDim ) {
                 case 0:
@@ -641,6 +695,17 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 
             // Redraw the map
             PUZZLE.DrawMap(currDim);
+
+            //print appropriate instructions
+            if(currLev === 1) {
+                if (currDim === 1) { //wall dimension
+                    PS.statusText("You changed dimensions! Are those walls?");
+                } else  if (currDim === 2) { //enemy dimension
+                    PS.statusText("There is nothing here...yet");
+                } else if(currDim === 0){
+                    PS.statusText("Intro: Press SPACE, see what happens!");
+                }
+            }
             break;
 		default:
 		{
