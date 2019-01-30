@@ -237,21 +237,21 @@ var moveCount = 0; //number of moves
          // If we are trying to move outside, the grid, abort the function
          if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
          {
-             PS.audioPlay("xylo_gb5");
+             PS.audioPlay("fx_shoot7");
              return;
          }
 
          // If we are trying to move into a wall, abort
          if(PS.data(nx, ny, PS.CURRENT) === 1)
          {
-             PS.audioPlay("xylo_gb5");
+             PS.audioPlay("fx_shoot7");
              return;
          }
 
          // If we are trying to move into a grid specific wall, abort
          if((PS.data(nx, ny, PS.CURRENT) === 3) && (currDim === 0))
          {
-             PS.audioPlay("xylo_gb5");
+             PS.audioPlay("fx_shoot7");
              return;
          }
 
@@ -262,11 +262,14 @@ var moveCount = 0; //number of moves
              PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND)
              PUZZLE.playerx = 0;
              PUZZLE.playery = 0; 
-             PS.audioPlay("xylo_d5"); // Play a sad sound
+             PS.audioPlay("fx_blast2"); // Play a sad sound
              return;
          }
 
          // if the player is trying to move a block, check if it can be moved
+         let currDirection = 0;
+
+         if((PS.color(nx, ny)))
 
          //check if we are moving into  goal
          if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
@@ -284,7 +287,7 @@ var moveCount = 0; //number of moves
          PS.color( nx, ny, PUZZLE.PLAYER_COLOR );
          PUZZLE.playerx = nx;
          PUZZLE.playery = ny;
-         PS.audioPlay("xylo_a5"); // Play a happy sound
+         PS.audioPlay("fx_click"); // Play a happy sound
          PUZZLE.DrawMap(currDim);
      },
 
@@ -434,7 +437,7 @@ var moveCount = 0; //number of moves
              {
                  PUZZLE.playerx = 0;
                  PUZZLE.playery = 0;
-                 PS.audioPlay("xylo_d5");
+                 PS.audioPlay("fx_blast2");
                  PUZZLE.DrawMap(0);
              }
          }
@@ -468,6 +471,19 @@ PS.init = function( system, options ) {
     PUZZLE.maps[9] = PUZZLE.map9;
     PUZZLE.SetLevelData(currLev);
     PUZZLE.DrawMap(currDim);
+
+    PS.gridShadow(true, PS.COLOR_GRAY);
+
+    PS.audioPlay("background_music", {
+        fileTypes : ["wav"],
+        path : "Sounds/",
+        loop : 1,
+        volume : 1.0, } );
+
+
+
+    //PS.audioLoad("background_music.wav", "Sounds/");
+    //PS.audioPlay("backgroundMusic.wav");
 
 
 };
