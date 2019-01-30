@@ -585,9 +585,7 @@ PS.enter = function( x, y, data, options ) {
         if(currLev === 0){
             PS.statusText( "Intro: Hover your mouse over the objects" );
         } else if (currLev === 1){
-            if(currDim === 0 ){ //first dimension
-                PS.statusText( "Intro: Press SPACE, see what happens!" );
-            }
+             PS.statusText( "Intro: Press SPACE, see what happens!" );
         } else if (currLev === 2){
             PS.statusText("Intro: a new foe has appeared...");
         } else if (currLev === 3){
