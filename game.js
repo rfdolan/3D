@@ -435,9 +435,6 @@ var moveCount = 0; //number of moves
              PS.statusText( "Intro: Hover your mouse over the objects" );
          }
          */
-         PS.fade(PUZZLE.playerx, PUZZLE.playery, )
-
-
         if( (currLev > 3) && (currLev < 9))
          {
              PS.statusText( "Move Count: " + moveCount);
