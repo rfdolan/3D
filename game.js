@@ -143,7 +143,7 @@ var PUZZLE  = {
         0,0,0,0,1,0,0,0,
         1,1,1,1,1,0,2,0,
         3,3,3,3,3,3,3,3,
-        0,0,0,0,1,0,0,0,
+        1,0,1,1,1,0,0,0,
         0,0,0,0,2,0,0,0,
         -1,0,0,0,0,0,0,0,
     ],
@@ -315,7 +315,7 @@ var PUZZLE  = {
 
         if(currLev === 0)
         {
-            PS.statusText( "Intro: Hover your mouse over the objects" );
+            PS.statusText( "Intro: Hover your mouse over the objects." );
         }
         else if (currLev === 1)
         {
@@ -323,11 +323,11 @@ var PUZZLE  = {
         }
         else if (currLev === 2)
         {
-            PS.statusText("Intro: a new foe has appeared...");
+            PS.statusText("Intro: There's something new...");
         }
         else if (currLev === 3)
         {
-            PS.statusText("(Final)Intro: are those one dimensional walls?");
+            PS.statusText("(Final)Intro: These walls are different...");
         }
         else if (currLev == 4)
         {
@@ -616,7 +616,7 @@ PS.enter = function( x, y, data, options ) {
     {
         if(currLev === 0)
         {
-            PS.statusText( "Intro: Hover your mouse over the objects" );
+            PS.statusText( "Intro: Hover your mouse over the objects." );
         }
         else if (currLev === 1)
         {
@@ -636,28 +636,28 @@ PS.enter = function( x, y, data, options ) {
         }
         else if (currLev === 2)
         {
-            PS.statusText("Intro: a new foe has appeared...");
+            PS.statusText("Intro: There's something new...");
         }
         else if (currLev === 3)
         {
-            PS.statusText("(Final)Intro: are those one dimensional walls?");
+            PS.statusText("(Final)Intro: These walls are different...");
         }
 
 
         if( x === PUZZLE.playerx && y === PUZZLE.playery)
         { //see if we are hovering over player
-            PS.statusText("PLAYER: use arrow keys to move");
+            PS.statusText("PLAYER: Use arrow keys to move.");
         }
         else if (currDim === 0)
         { //check we are in th  goal dimension
             pos = PS.data(x, y, PS.CURRENT); //get the value of the position of the mouse
             if(pos === -1)
             { //see if it is the goal
-                PS.statusText("GOAL: try to reach me");
+                PS.statusText("GOAL: Try to reach me.");
             }
             else if ((pos === 3) && (currLev === 3))
             {
-                PS.statusText("WALL2: change dimensions to go through me");
+                PS.statusText("1D-WALL: Change dimensions to pass.");
             }
         }
         else if (currDim === 1)
@@ -665,7 +665,7 @@ PS.enter = function( x, y, data, options ) {
             pos = PS.data(x, y, PS.CURRENT);
             if(pos === 1)
             {
-                PS.statusText("WALL: you cannot go through me");
+                PS.statusText("WALL: You can never go through me.");
             }
         }
         else if (currDim === 2)
@@ -673,7 +673,7 @@ PS.enter = function( x, y, data, options ) {
             pos = PS.data(x, y, PS.CURRENT);
             if (pos === 2)
             {
-                PS.statusText("ENEMY: restarts level");
+                PS.statusText("ENEMY: Restarts level if touched.");
             }
         }
 
