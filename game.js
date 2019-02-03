@@ -51,301 +51,319 @@ Any value returned is ignored.
 var currDim = 0; //current  dimension
 var currLev = 0; //current level
 var moveCount = 0; //number of moves
- var PUZZLE  = {
+var PUZZLE  = {
 
-     GRID_SIZE: 8,
+    GRID_SIZE: 8,
+    NUM_LEVELS: 9,
 
-     //grid colors
-     GOAL_GRID: 0x7A0ACF, //grid with goal 0
-     ENEMY_GRID: 0x000000, //grid with enemy 2
-     WALL_GRID: 0xFFB305, //grid with wall 1
-     WALL_GRID2: 0XFF5105, //another color for grid with wall
-     WALL_GRID3: 0x0E5D3E,  //another color for grid with wall
-     CURRENT_BACKGROUND: 0x7A0ACF,
+    //grid colors
+    GOAL_GRID: 0x7A0ACF, //grid with goal 0
+    ENEMY_GRID: 0x000000, //grid with enemy 2
+    WALL_GRID: 0xFFB305, //grid with wall 1
+    WALL_GRID2: 0XFF5105, //another color for grid with wall
+    WALL_GRID3: 0x0E5D3E,  //another color for grid with wall
+    CURRENT_BACKGROUND: 0x7A0ACF,
 
-     //sprite colors
-     GOAL_COLOR: 0XF8FF01, //color of goal -1
-     PLAYER_COLOR: 0X57C493, //color of player
-     ENEMY_COLOR: 0XFF0000, //enemy color 2
-     WALL_COLOR: 0X897CA1, //wall color 1
-     WALL1_COLOR: 0xFF8E3B, //one dimensional wall color
-     //0x946846, //single dimension wall color 3
-     //BLOCK_COLOR: 0x1976c6, // color of pushable block
+    //sprite colors
+    GOAL_COLOR: 0XF8FF01, //color of goal -1
+    PLAYER_COLOR: 0X57C493, //color of player
+    ENEMY_COLOR: 0XFF0000, //enemy color 2
+    WALL_COLOR: 0X897CA1, //wall color 1
+    WALL1_COLOR: 0xFF8E3B, //one dimensional wall color
+    //0x946846, //single dimension wall color 3
+    //BLOCK_COLOR: 0x1976c6, // color of pushable block
 
-     playerx: 0, //player x value
-     playery: 0, //player y value
+    playerx: 0, //player x value
+    playery: 0, //player y value
 
-     mapTest: [ // map used to test game elements
-         0,0,0,0,0,0,0,-1,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,4,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-     ],
+    mapTest: [ // map used to test game elements
+        0,0,0,0,0,0,0,-1,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,4,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+    ],
+    map0: [ // level 0
+        0,0,0,0,0,0,0,-1,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+    ],
+    map1: [ // level 1
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,1,0,0,-1,
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,
+    ],
 
-     map0: [ // level 0
-         0,0,0,0,0,0,0,-1,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-     ],
-     map1: [ // level 1
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,1,0,0,-1,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,
-     ],
+    map2: [ //level 2
+        0,0,0,1,0,0,0,0, //1 represents where walls are going to be positioned
+        0,0,0,1,0,0,0,0,
+        0,0,0,1,0,0,0,0,
+        0,1,0,1,0,1,0,0,
+        0,1,0,1,0,1,0,0,
+        0,1,0,2,0,1,0,0, //2 signifies an enemy
+        0,1,0,0,0,1,0,0,
+        0,1,0,0,0,1,0,-1, //-1 signifies the goal
+    ],
+    map3: [ // level 3
+        0,3,0,0,0,0,0,0,
+        3,3,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,3,3,
+        0,0,0,0,0,0,3,-1,
+    ],
+    map4: [ // level 4
+        0,0,0,3,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,3,1,0,1,1,
+        3,3,3,3,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        3,3,3,3,3,3,3,3,
+        0,0,0,0,2,0,0,0,
+        0,0,0,0,-1,2,0,0,
+    ],
+    map5: [ // level 5
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,
+        1,1,1,1,1,0,2,0,
+        3,3,3,3,3,3,3,3,
+        0,0,0,0,1,0,0,0,
+        0,0,0,0,2,0,0,0,
+        -1,0,0,0,0,0,0,0,
+    ],
+    map6: [ //level 6
+        0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,0,0,2,0,0,0,0,0,0,
+        3,3,3,3,0,0,0,1,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
+        0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+        3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,1,0,0,-1,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    ],
 
-     map2: [ //level 2
-         0,0,0,1,0,0,0,0, //1 represents where walls are going to be positioned
-         0,0,0,1,0,0,0,0,
-         0,0,0,1,0,0,0,0,
-         0,1,0,1,0,1,0,0,
-         0,1,0,1,0,1,0,0,
-         0,1,0,2,0,1,0,0, //2 signifies an enemy
-         0,1,0,0,0,1,0,0,
-         0,1,0,0,0,1,0,-1, //-1 signifies the goal
-     ],
+    map7: [ //level 7
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,3,-1,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,3,3,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,0,1,1,0,0,0,0,2,0,0,0,0,0,0,
+        0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,
+        0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,1,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
 
-     map3: [ // level 3
-         0,3,0,0,0,0,0,0,
-         3,3,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,3,3,
-         0,0,0,0,0,0,3,-1,
-     ],
-     map4: [ // level 4
-         0,0,0,3,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,3,1,0,1,1,
-         3,3,3,3,0,0,0,0,
-         0,0,0,0,0,0,0,0,
-         3,3,3,3,3,3,3,3,
-         0,0,0,0,2,0,0,0,
-         0,0,0,0,-1,2,0,0,
-     ],
-     map5: [ // level 5
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,
-         1,1,1,1,1,0,2,0,
-         3,3,3,3,3,3,3,3,
-         0,0,0,0,1,0,0,0,
-         0,0,0,0,2,0,0,0,
-         -1,0,0,0,0,0,0,0,
-     ],
-     map6: [ //level 6
-         0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,0,0,2,0,0,0,0,0,0,
-         3,3,3,3,0,0,0,1,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0,
-         1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
-         0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
-         3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,1,0,0,-1,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     ],
+    ],
 
-     map7: [ //level 7
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,3,-1,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,3,3,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         1,1,0,1,1,0,0,0,0,2,0,0,0,0,0,0,
-         0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,
-         0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,1,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+    map8: [ //level 8
+        0,0,0,3,0,2,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,2,0,0,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,0,2,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,0,0,2,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,0,0,0,2,0,0,0,0,0,
+        0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,3,0,0,0,0,0,0,0,0,2,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        3,3,3,3,3,3,3,0,0,0,0,3,3,3,3,3,
+        0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
+        1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,-1,
+    ],
+    map9: [ //level 9
+        0,3,1,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,1,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,1,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,1,3,3,1,3,3,3,3,3,3,3,3,3,3,
+        3,3,1,3,3,1,3,3,3,3,3,3,3,3,3,3,
+        3,3,1,3,3,1,3,3,3,3,3,3,3,3,1,1,
+        3,3,1,3,3,1,3,3,3,3,3,3,3,3,1,3,
+        3,3,1,3,3,1,3,3,3,3,3,3,3,3,1,3,
+        3,3,3,3,3,1,3,3,3,3,3,3,3,3,1,3,
+        2,2,3,3,3,1,3,3,3,3,1,3,3,3,1,3,
+        3,3,3,3,3,1,3,3,3,3,1,3,3,3,1,3,
+        2,2,1,1,1,1,3,3,3,3,1,3,3,3,3,3,
+        3,3,1,3,3,3,3,3,3,1,1,3,2,3,3,3,
+        3,3,1,3,3,3,3,3,3,1,3,3,2,3,2,2,
+        3,3,1,3,3,3,3,3,3,3,2,3,2,3,3,3,
+        3,3,1,3,3,3,3,3,3,3,3,1,3,1,-1,3,
+    ],
 
-     ],
+    map10: [ //level 10
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    ],
 
-     map8: [ //level 8
-         0,0,0,3,0,2,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,2,0,0,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,2,0,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,0,2,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,0,0,2,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,0,0,0,2,0,0,0,0,0,
-         0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,3,0,0,0,0,0,0,0,0,2,0,0,0,
-         1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         3,3,3,3,3,3,3,0,0,0,0,3,3,3,3,3,
-         0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
-         1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,-1,
-     ],
-     map9: [ //level 9
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     ],
+    maps: [],
 
-     maps: [],
+    gridSize: 0,
 
-     gridSize: 0,
+    movePlayer : function ( x, y ) //move player
+    {
 
-     movePlayer : function ( x, y ) //move player
-     {
+        let nx = PUZZLE.playerx + x;
+        let ny = PUZZLE.playery + y;
 
-         let nx = PUZZLE.playerx + x;
-         let ny = PUZZLE.playery + y;
+        // If we are trying to move outside, the grid, abort the function
+        if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
+        {
+            PS.audioPlay("fx_shoot7");
+            return;
+        }
 
-         // If we are trying to move outside, the grid, abort the function
-         if( ( 0 >  nx ) || ( PUZZLE.GRID_SIZE <= nx )  || ( 0 > ny ) || ( PUZZLE.GRID_SIZE  <= ny ) )
-         {
-             PS.audioPlay("fx_shoot7");
-             return;
-         }
+        // If we are trying to move into a wall, abort
+        if(PS.data(nx, ny, PS.CURRENT) === 1)
+        {
+            PS.audioPlay("fx_shoot7");
+            return;
+        }
 
-         // If we are trying to move into a wall, abort
-         if(PS.data(nx, ny, PS.CURRENT) === 1)
-         {
-             PS.audioPlay("fx_shoot7");
-             return;
-         }
+        // If we are trying to move into a grid specific wall, abort
+        if((PS.data(nx, ny, PS.CURRENT) === 3) && (currDim === 0))
+        {
+            PS.audioPlay("fx_shoot7");
+            return;
+        }
 
-         // If we are trying to move into a grid specific wall, abort
-         if((PS.data(nx, ny, PS.CURRENT) === 3) && (currDim === 0))
-         {
-             PS.audioPlay("fx_shoot7");
-             return;
-         }
+        // if the player is moving into an enemy, reset their position
+        if(PS.data(nx, ny, PS.CURRENT) === 2)
+        {
+            PS.color( 0, 0, PUZZLE.PLAYER_COLOR);
+            PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND)
+            PUZZLE.playerx = 0;
+            PUZZLE.playery = 0;
+            PS.audioPlay("fx_blast2"); // Play a sad sound
+            return;
+        }
 
-         // if the player is moving into an enemy, reset their position
-         if(PS.data(nx, ny, PS.CURRENT) === 2)
-         {
-             PS.color( 0, 0, PUZZLE.PLAYER_COLOR);
-             PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND)
-             PUZZLE.playerx = 0;
-             PUZZLE.playery = 0; 
-             PS.audioPlay("fx_blast2"); // Play a sad sound
-             return;
-         }
-
-         // if the player is trying to move a block, check if it can be moved
+        // if the player is trying to move a block, check if it can be moved
         // let currDirection = 0;
 
         // if((PS.color(nx, ny)))
 
-         //check if we are moving into  goal
-         if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
-         {
-             PS.audioPlay("fx_ding"); //play triumphant sound
-             currLev += 1; //go to next level
-             PUZZLE.SetLevelData(currLev);
-             nx = 0; //restart player position
-             ny = 0;
-         }
+        //check if we are moving into  goal
+        if ( (PS.data(nx, ny, PS.CURRENT) === -1) && currDim === 0)
+        {
+            PS.audioPlay("fx_ding"); //play triumphant sound
+            currLev += 1; //go to next level
+            PUZZLE.SetLevelData(currLev);
+            nx = 0; //restart player position
+            ny = 0;
+        }
 
-         // Reset the color of the bead the player was just on
-         PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
-         // move the player to the desired square
-         PS.color( nx, ny, PUZZLE.PLAYER_COLOR );
-         PUZZLE.playerx = nx;
-         PUZZLE.playery = ny;
-         PS.audioPlay("fx_click"); // Play a happy sound
-         PUZZLE.DrawMap(currDim);
-     },
+        // Reset the color of the bead the player was just on
+        PS.color( PUZZLE.playerx, PUZZLE.playery, PUZZLE.CURRENT_BACKGROUND );
+        // move the player to the desired square
+        PS.color( nx, ny, PUZZLE.PLAYER_COLOR );
+        PUZZLE.playerx = nx;
+        PUZZLE.playery = ny;
+        PS.audioPlay("fx_click"); // Play a happy sound
+        PUZZLE.DrawMap(currDim);
+    },
 
-     // Set the ps.data values for each level, among other things
-     SetLevelData : function(currLev)
-     {
+    // Set the ps.data values for each level, among other things
+    SetLevelData : function(currLev)
+    {
 
-         if(currLev === 0)
-         {
-             PS.statusText( "Intro: Hover your mouse over the objects" );
-         }
-         else if (currLev === 1)
-         {
-             PS.statusText( "Intro: Press SPACE, see what happens!" );
-         }
-         else if (currLev === 2)
-         {
-             PS.statusText("Intro: a new foe has appeared...");
-         }
-         else if (currLev === 3)
-         {
-             PS.statusText("(Final)Intro: are those one dimensional walls?");
-         }
-         else if (currLev == 4)
-         {
-             PS.statusText("START");
-         }
+        if(currLev === 0)
+        {
+            PS.statusText( "Intro: Hover your mouse over the objects" );
+        }
+        else if (currLev === 1)
+        {
+            PS.statusText( "Intro: Press SPACE, see what happens!" );
+        }
+        else if (currLev === 2)
+        {
+            PS.statusText("Intro: a new foe has appeared...");
+        }
+        else if (currLev === 3)
+        {
+            PS.statusText("(Final)Intro: are those one dimensional walls?");
+        }
+        else if (currLev == 4)
+        {
+            PS.statusText("START");
+        }
 
-         //update grid size
-         if(currLev > 5)
-         {
-             PUZZLE.GRID_SIZE = 16;
-             PUZZLE.gridSize  = 16;
-         }
-         else
-         {
-             PUZZLE.GRID_SIZE = 8;
-             PUZZLE.gridSize = 8;
-         }
-         PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
+        //update grid size
+        if(currLev > 5)
+        {
+            PUZZLE.GRID_SIZE = 16;
+            PUZZLE.gridSize  = 16;
+        }
+        else
+        {
+            PUZZLE.GRID_SIZE = 8;
+            PUZZLE.gridSize = 8;
+        }
+        PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
 
-         let currMap = PUZZLE.maps[currLev];
+        let currMap = PUZZLE.maps[currLev];
 
-         // Set the data values of every bead on the grid based on the map for the current level
-         for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
-         {
-             for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
-             {
+        // Set the data values of every bead on the grid based on the map for the current level
+        for(let currx = 0; currx < PUZZLE.gridSize; currx+=1)
+        {
+            for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
+            {
 
-                 let currBead = currMap[(curry*PUZZLE.gridSize) + currx];
-                 PS.data(currx, curry, currBead);
-             }
-         }
-     },
+                let currBead = currMap[(curry*PUZZLE.gridSize) + currx];
+                PS.data(currx, curry, currBead);
+            }
+        }
+    },
 
-     // Draw the map of the current dimension
-     DrawMap : function(currDim)
-     {
+    // Draw the map of the current dimension
+    DrawMap : function(currDim)
+    {
         //change color of entire grid
         PS.gridColor( PUZZLE.CURRENT_BACKGROUND );
         PS.color(PS.ALL, PS.ALL, PUZZLE.CURRENT_BACKGROUND );
@@ -385,15 +403,15 @@ var moveCount = 0; //number of moves
                 //iterate through map array
                 for(let curry = 0; curry < PUZZLE.gridSize; curry+=1)
                 {
-                   for(let currx = 0; currx < PUZZLE.gridSize; currx+= 1)
-                   {
-                       if (PS.data(currx, curry, PS.CURRENT) === 1)
-                       {
-                           //make the walls appear
-                           PS.color(currx, curry, PUZZLE.WALL_COLOR);
-                           PS.borderColor(currx, curry, PUZZLE.WALL_COLOR);
-                       }
-                   }
+                    for(let currx = 0; currx < PUZZLE.gridSize; currx+= 1)
+                    {
+                        if (PS.data(currx, curry, PS.CURRENT) === 1)
+                        {
+                            //make the walls appear
+                            PS.color(currx, curry, PUZZLE.WALL_COLOR);
+                            PS.borderColor(currx, curry, PUZZLE.WALL_COLOR);
+                        }
+                    }
 
                 }
                 break;
@@ -419,67 +437,67 @@ var moveCount = 0; //number of moves
                 break;
         }
 
-         // Move the player to the right spot (checking that they'll be somewhere in the grid)
-         if((PUZZLE.playerx < PUZZLE.GRID_SIZE) && (PUZZLE.playery < PUZZLE.GRID_SIZE))
-         {
-             PS.color(PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR);
-         }
-         PS.timerStart( 1, PUZZLE.tick );
-     },
+        // Move the player to the right spot (checking that they'll be somewhere in the grid)
+        if((PUZZLE.playerx < PUZZLE.GRID_SIZE) && (PUZZLE.playery < PUZZLE.GRID_SIZE))
+        {
+            PS.color(PUZZLE.playerx, PUZZLE.playery, PUZZLE.PLAYER_COLOR);
+        }
+        PS.timerStart( 1, PUZZLE.tick );
+    },
 
-     tick : function()
-     {
+    tick : function()
+    {
 
-         /*
-         if(currLev < 4){
-             PS.statusText( "Intro: Hover your mouse over the objects" );
-         }
-         */
-        if( (currLev > 3) && (currLev < 9))
-         {
-             PS.statusText( "Move Count: " + moveCount);
-         }
-         // They finished the game, so show their move count and restart instructions
-         else if (currLev > 8)
-         {
-             PS.statusText( "Total moves: " + moveCount + ". Press 'R' to start over." );
-         }
+        /*
+        if(currLev < 4){
+            PS.statusText( "Intro: Hover your mouse over the objects" );
+        }
+        */
+        if( (currLev > 3) && (currLev < PUZZLE.NUM_LEVELS))
+        {
+            PS.statusText( "Move Count: " + moveCount);
+        }
+        // They finished the game, so show their move count and restart instructions
+        else if (currLev > PUZZLE.NUM_LEVELS)
+        {
+            PS.statusText( "Total moves: " + moveCount + ". Press 'R' to start over." );
+        }
 
-         // If the player is in dimension 0..
-         if(currDim === 0 )
-         {
-             // If the player is touching the goal, go to the next level
-             if((PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
-             {
-                 currLev += 1;
-                 PUZZLE.SetLevelData(currLev);
-                 PUZZLE.playerx = 0;
-                 PUZZLE.playery = 0;
-                 PS.audioPlay("fx_ding");
-                 PUZZLE.DrawMap(0);
-             }
+        // If the player is in dimension 0..
+        if(currDim === 0 )
+        {
+            // If the player is touching the goal, go to the next level
+            if((PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === -1))
+            {
+                currLev += 1;
+                PUZZLE.SetLevelData(currLev);
+                PUZZLE.playerx = 0;
+                PUZZLE.playery = 0;
+                PS.audioPlay("fx_ding");
+                PUZZLE.DrawMap(0);
+            }
 
-             // If the player is going to teleport into a wall, kill them
-             else if(PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === 3)
-             {
-                 PUZZLE.playerx = 0;
-                 PUZZLE.playery = 0;
-                 PS.audioPlay("fx_blast2");
-                 PUZZLE.DrawMap(0);
-             }
-         }
-     },
+            // If the player is going to teleport into a wall, kill them
+            else if(PS.data(PUZZLE.playerx, PUZZLE.playery, PS.CURRENT) === 3)
+            {
+                PUZZLE.playerx = 0;
+                PUZZLE.playery = 0;
+                PS.audioPlay("fx_blast2");
+                PUZZLE.DrawMap(0);
+            }
+        }
+    },
 
 };
 
 
 PS.init = function( system, options ) {
-	"use strict"; // Do not remove this directive!
+    "use strict"; // Do not remove this directive!
     moveCount =  0;
 
 
     //grid size
-   // PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
+    // PS.gridSize( PUZZLE.GRID_SIZE, PUZZLE.GRID_SIZE );
 
 
 
@@ -495,6 +513,7 @@ PS.init = function( system, options ) {
     PUZZLE.maps[7] = PUZZLE.map7;
     PUZZLE.maps[8] = PUZZLE.map8;
     PUZZLE.maps[9] = PUZZLE.map9;
+    PUZZLE.maps[10] = PUZZLE.map10;
     PUZZLE.SetLevelData(currLev);
     PUZZLE.DrawMap(currDim);
 
@@ -584,13 +603,13 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 
 PS.enter = function( x, y, data, options ) {
-	"use strict"; // Do not remove this directive!
+    "use strict"; // Do not remove this directive!
 
-	// Uncomment the following code line to inspect x/y parameters:
+    // Uncomment the following code line to inspect x/y parameters:
 
-	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
+    // PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
-	// Add code here for when the mouse cursor/touch enters a bead.
+    // Add code here for when the mouse cursor/touch enters a bead.
     let pos;
 
     if(currLev < 4)
@@ -726,65 +745,65 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-	"use strict"; // Do not remove this directive!
+    "use strict"; // Do not remove this directive!
 
-	switch( key )
-	{
-		case PS.KEY_ARROW_UP:
-		case 87:
-		case 119:
-		{
-		    if(currLev > 3 )
-		    {
+    switch( key )
+    {
+        case PS.KEY_ARROW_UP:
+        case 87:
+        case 119:
+        {
+            if(currLev > 3 )
+            {
                 moveCount+=1;
             }
 
-			PUZZLE.movePlayer( 0, -1 );
-			break;
-		}
-		case PS.KEY_ARROW_RIGHT:
-		case 68:
-		case 100:
-		{
+            PUZZLE.movePlayer( 0, -1 );
+            break;
+        }
+        case PS.KEY_ARROW_RIGHT:
+        case 68:
+        case 100:
+        {
             if(currLev > 3 )
             {
                 moveCount+=1;
             }
 
             PUZZLE.movePlayer( 1, 0 );
-			break;
-		}
-		case PS.KEY_ARROW_DOWN:
-		case 83:
-		case 115:
-		{
+            break;
+        }
+        case PS.KEY_ARROW_DOWN:
+        case 83:
+        case 115:
+        {
             if(currLev > 3 )
             {
                 moveCount+=1;
             }
 
             PUZZLE.movePlayer( 0, 1 );
-			break;
-		}
-		case PS.KEY_ARROW_LEFT:
-		case 65:
-		case 97:
-		{
+            break;
+        }
+        case PS.KEY_ARROW_LEFT:
+        case 65:
+        case 97:
+        {
             if(currLev > 3 )
             {
                 moveCount+=1;
             }
 
             PUZZLE.movePlayer( -1, 0 );
-			break;
-		}
+            break;
+        }
 
-		// R
+        // R
         case 82:
         case 114:
         {
             // If the player pressed r at the end of the game
-            if (currLev === 9)
+            if (currLev === PUZZLE.NUM_LEVELS)
             {
                 // Set the level and dimension to 0
                 currLev = 0;
@@ -846,16 +865,16 @@ PS.keyDown = function( key, shift, ctrl, options ) {
                 }
             }
             break;
-		default:
-		{
-			break;
-		}
-	}
-	// Uncomment the following code line to inspect first three parameters:
+        default:
+        {
+            break;
+        }
+    }
+    // Uncomment the following code line to inspect first three parameters:
 
-	// PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
+    // PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
 
-	// Add code here for when a key is pressed.
+    // Add code here for when a key is pressed.
 };
 
 
